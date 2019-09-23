@@ -158,6 +158,8 @@
 @property (nonatomic, readwrite) UIFont * unreadThreadSubtitleFont;
 
 @property (nonatomic, readwrite) NSString * threadNameColor;
+@property (nonatomic, readwrite) NSString * systemGeneratedMessagesColor;
+
 @property (nonatomic, readwrite) BOOL locationMessagesEnabled;
 @property (nonatomic, readwrite) BOOL imageMessagesEnabled;
 

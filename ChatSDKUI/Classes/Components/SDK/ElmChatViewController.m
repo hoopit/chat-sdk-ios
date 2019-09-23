@@ -89,6 +89,7 @@
     for(NSArray * cell in BChatSDK.ui.messageCellTypes) {
         [self.tableView registerClass:cell.firstObject forCellReuseIdentifier:[cell.lastObject stringValue]];
     }
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"SimpleTableItem"];
 }
 
 // The naivgation bar has three functions
@@ -105,7 +106,7 @@
 //    UIImage *image = [[UIImage imageNamed:@"option"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 //    self.navigationItem.rightBarButtonItem =  [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:self action:@selector(openOptionActionSheet)];
     
-    UIBarButtonItem *chatOptionButton = [[UIBarButtonItem alloc] initWithTitle:@"..."               style:UIBarButtonItemStylePlain target:self action:@selector(openOptionActionSheet)];
+    UIBarButtonItem *chatOptionButton = [[UIBarButtonItem alloc] initWithTitle:@"..." style:UIBarButtonItemStylePlain target:self action:@selector(openOptionActionSheet)];
     [chatOptionButton setTintColor:[UIColor blackColor]];
     self.navigationItem.rightBarButtonItem = chatOptionButton;
     
@@ -494,18 +495,6 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView_ cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MyIdentifier"];
-//    if (cell == nil) {
-//        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MyIdentifier"];
-//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-//        
-//    }
-//    cell.textLabel.font =  BChatSDK.config.messageTimeFont;
-//    cell.textLabel.text = @"user left the chat";
-//    cell.textLabel.backgroundColor = [UIColor redColor];
-//    cell.textLabel.textAlignment = NSTextAlignmentCenter;
-//    return cell;
-    
     id<PElmMessage> message = [self messageForIndexPath:indexPath];
 
     if (BChatSDK.encryption) {
@@ -523,6 +512,54 @@
         (!BChatSDK.audioMessage && message.type.integerValue == bMessageTypeAudio)) {
         // This is a standard text cell
         messageCell = [tableView_ dequeueReusableCellWithIdentifier:@"0"];
+    }
+    else if (message.type.integerValue == bMessageTypeUserAdded || message.type.integerValue == bMessageTypeUserLeft || message.type.integerValue == bMessageTypeGroupNameUpdated) {
+        NSString *identifier = @"MessagesCell";
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+        if (cell == NULL) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+        }
+        
+      
+        cell.textLabel.textAlignment = NSTextAlignmentCenter;
+        cell.textLabel.numberOfLines = 0;
+        cell.textLabel.textColor = [BCoreUtilities colorWithHexString:BChatSDK.config.systemGeneratedMessagesColor];
+
+        NSString *messageStr;
+        NSRange range;
+        NSRange secondRange;
+
+        switch (message.type.integerValue) {
+            case bMessageTypeUserAdded:
+            {
+                messageStr = [NSString stringWithFormat:NSLocalizedString(@"user_added", nil),message.meta[bMessageUsername]];
+                range = [messageStr rangeOfString:message.meta[bMessageUsername]];
+                break;
+            }
+            case bMessageTypeUserLeft:
+            {
+                messageStr = [NSString stringWithFormat:NSLocalizedString(@"user_left_group", nil),message.meta[bMessageUsername]];
+                range = [messageStr rangeOfString:message.meta[bMessageUsername]];
+                break;
+            }
+            case bMessageTypeGroupNameUpdated:
+            {
+                messageStr = [NSString stringWithFormat:NSLocalizedString(@"user_renamed_group", nil),message.meta[bMessageChangedBy],message.meta[bMessageNewName]];
+                range = [messageStr rangeOfString:message.meta[bMessageChangedBy]];
+                break;
+            }
+            default:
+                break;
+        }
+        NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:messageStr];
+        [attributedText setAttributes:@{NSFontAttributeName:BChatSDK.config.unreadThreadTitleFont} range:range];
+        if ([(message.meta[bMessageNewName]) length]) {
+        secondRange= [messageStr rangeOfString:message.meta[bMessageNewName]];
+        [attributedText setAttributes:@{NSFontAttributeName:BChatSDK.config.unreadThreadTitleFont} range:secondRange];
+        }
+
+        cell.textLabel.attributedText = attributedText;
+        return cell;
     }
     else {
         messageCell = [tableView_ dequeueReusableCellWithIdentifier:message.type.stringValue];
@@ -588,11 +625,14 @@
 // Set the message height based on the text height
 - (CGFloat)tableView:(UITableView *)tableView_ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     id<PElmMessage> message = [self messageForIndexPath:indexPath];
+    if (message.type.integerValue == bMessageTypeUserAdded || message.type.integerValue == bMessageTypeUserLeft || message.type.integerValue == bMessageTypeGroupNameUpdated) {
+        return 70;
+    }
+    
     if(message && [message entityID]) {
         return [BMessageCell cellHeight:message];
     }
     else {
-//        NSLog(@"Section: %i, row: %i" , indexPath.section, indexPath.row);
         [_messageManager debug];
         return 0;
     }

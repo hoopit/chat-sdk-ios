@@ -24,6 +24,10 @@ typedef enum {
     bMessageTypeLeaveConversation = 8,
     bMessageTypeAddedMember = 9,
     bMessageTypeGroupRenamed = 10,
+    bMessageTypeUserAdded = 1000,
+    bMessageTypeUserLeft = 1001,
+    bMessageTypeGroupNameUpdated = 1002,
+
 
 } bMessageType;
 
@@ -54,6 +58,9 @@ typedef enum {
 
 #define bMessageSystemType @"system-type"
 
+#define bMessageUsername @"username"
+#define bMessageChangedBy @"changedBy"
+#define bMessageNewName @"newName"
 
 // Is the message the first, last or a middle message
 //#define bMessagePosition @"position"

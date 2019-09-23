@@ -238,11 +238,13 @@
                 NSArray * textfields = alertController.textFields;
                 UITextField * groupName = textfields[0];
                 self.usersToInvite(_selectedContacts, groupName.text);
-                [self dismissViewControllerAnimated:YES completion:^{
-//                    if (self.usersToInvite != Nil) {
-                    
-//                    }
-                }];
+                [self.navigationController popViewControllerAnimated:true];
+//
+//                [self dismissViewControllerAnimated:YES completion:^{
+////                    if (self.usersToInvite != Nil) {
+//
+////                    }
+//                }];
                 
             }]];
             [self presentViewController:alertController animated:YES completion:nil];
@@ -411,11 +413,11 @@
     // for 1-1 chat
     
     // if(_selectedContacts.count < maximumSelectedUsers || maximumSelectedUsers <= 0) {
-    if ([_selectedContacts containsObject:user]){
+    if ([_selectedContacts containsObject:user] ){
         [_selectedContacts removeObject:user];
     }
-    else{
-        [_selectedContacts removeAllObjects];
+    else if (![_contactsToExclude containsObject:user]){
+//        [_selectedContacts removeAllObjects];
         [_selectedContacts addObject:user];
     }
     //   [self.names addObject:user.name];

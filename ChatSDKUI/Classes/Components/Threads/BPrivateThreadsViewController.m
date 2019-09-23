@@ -55,7 +55,10 @@
     self.navigationItem.rightBarButtonItem =  [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                                             target:self
                                                                                             action:@selector(createThread)];
-    [self setExtendedLayoutIncludesOpaqueBars:YES];
+//    [self setExtendedLayoutIncludesOpaqueBars:YES];
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.extendedLayoutIncludesOpaqueBars = NO;
+    self.automaticallyAdjustsScrollViewInsets = NO;
 }
 
 -(void) createThread {
