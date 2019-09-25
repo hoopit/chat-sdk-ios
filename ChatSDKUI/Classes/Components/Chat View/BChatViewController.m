@@ -73,10 +73,9 @@
 -(void)leaveChat {
     [BChatSDK.core deleteThread:_thread];
     [BChatSDK.core leaveThread:_thread];
-    // if true, back was pressed
-//    if (![self.navigationController.viewControllers indexOfObject:self]==NSNotFound) {
+    if (!self.isMovingFromParentViewController) {
         [self.navigationController popViewControllerAnimated:true];
-//    }
+    }
 }
 
 -(void) openInviteScreen {
