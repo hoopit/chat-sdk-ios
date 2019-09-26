@@ -37,7 +37,9 @@
     self.statusImageView.layer.cornerRadius = 6;
     [self setAvailabilityLabelText:@""];
     
-    [self.profileImageView loadAvatar:user];
+    [self.profileImageView sd_setImageWithURL:[NSURL URLWithString: user.imageURL]
+                             placeholderImage:user.imageAsImage
+                                      options:SDWebImageLowPriority & SDWebImageScaleDownLargeImages];
     
     self.title.text = user.name;
 //    self.subtitle.text = user.statusText;
@@ -70,7 +72,7 @@
     BOOL value = [[user.meta metaValueForKey:@"can_message"] boolValue];
     if (value == false){
         self.statusImageView.image = [NSBundle uiImageNamed:@"checkbox_disabeled@2x.png"];
-        self.subtitle.text = [NSBundle t: NSLocalizedString(@"application_not_installed", nil)];
+        self.subtitle.text = [NSBundle t: NSLocalizedString(@"chat_contacts_subtitle", nil)];
     }
 //    printf("%@", [user.meta metaStringForKey:@"can_message"]);
 //    if ([user.meta metaValueForKey:@"can_message"] == true) {
@@ -106,7 +108,6 @@
     }
     else {
         self.statusImageView.keepBottomOffsetTo(self.stateLabel).equal = 5;
-//        self.statusImageView.keepVerticalAlignTo(self.statusImageView.superview).equal = -15;
     }
     self.stateLabel.text = [NSBundle t:availability];
 }
