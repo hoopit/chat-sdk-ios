@@ -38,8 +38,8 @@
     [self setAvailabilityLabelText:@""];
     
     [self.profileImageView sd_setImageWithURL:[NSURL URLWithString: user.imageURL]
-                             placeholderImage:user.imageAsImage
-                                      options:SDWebImageLowPriority & SDWebImageScaleDownLargeImages];
+                             placeholderImage:user.defaultImage
+                                      options:SDWebImageCacheMemoryOnly & SDWebImageScaleDownLargeImages];
     
     self.title.text = user.name;
 //    self.subtitle.text = user.statusText;

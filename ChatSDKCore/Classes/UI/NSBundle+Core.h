@@ -196,11 +196,13 @@
 #define bBusy @"bBusy"
 
 @protocol PMessage;
+@protocol PThread;
 
 @interface NSBundle(ChatCore)
 
 +(NSBundle *) coreBundle;
 +(NSString *) t: (NSString *) string;
 +(NSString *) textForMessage: (id<PMessage>) message;
++(NSString *) extractTextMessage: (id<PThread>) thread;
 
 @end

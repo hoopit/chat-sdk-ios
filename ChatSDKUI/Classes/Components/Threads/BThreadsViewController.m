@@ -186,7 +186,8 @@
     
     id<PMessage> newestMessage = thread.newestMessage;
     if (newestMessage) {
-        text = [NSBundle textForMessage:newestMessage];
+        text = [NSBundle extractTextMessage:thread];
+//        text = [NSBundle textForMessage:newestMessage];
     }
     
     if (threadDate) {
@@ -223,8 +224,20 @@
             cell.messageTextView.font = BChatSDK.config.unreadThreadSubtitleFont;
         }
     }
+    NSString *chatTitle = @"";
+
+    if ([thread.name length] == 0) {
+        chatTitle = thread.memberListString;
+        // In Group chat show your name also
+        if (thread.users.count > 2) {
+            [chatTitle  stringByAppendingString:[NSString stringWithFormat:@", %@",BChatSDK.currentUser.name]];
+        }
+    } else {
+        chatTitle = thread.name;
+    }
+    cell.titleLabel.text = chatTitle;
     
-    cell.titleLabel.text = thread.displayName ? thread.displayName : [NSBundle t: bDefaultThreadName];
+//    cell.titleLabel.text = thread.name ? thread.name : thread.memberListString;
     
     NSString * threadImagePath = [thread.meta metaValueForKey:bImageURL];
     NSURL * threadURL = threadImagePath && threadImagePath.length ? [NSURL URLWithString:threadImagePath] : Nil;

@@ -46,7 +46,7 @@
         }
         else
         {
-            self.title =  [NSBundle t: NSLocalizedString(bInviteFriend, nil)];
+            self.title = NSLocalizedString(@"invite_others", nil);
         }
        [_contactsToExclude addObjectsFromArray:users];
         self.usersToInvite = action;
@@ -80,7 +80,7 @@
         }
         else
         {
-            self.title =  [NSBundle t: NSLocalizedString(bInviteFriend, nil)];
+            self.title =  NSLocalizedString(@"invite_others", nil);
         }
         
         _selectedContacts = [NSMutableArray new];
@@ -168,7 +168,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:YES];
-    self.navigationController.navigationBar.tintColor = [UIColor blackColor];
+//    self.navigationController.navigationBar.tintColor = [UIColor blackColor];
 
     __weak __typeof__(self) weakSelf = self;
     _internetConnectionHook = [BHook hook:^(NSDictionary * data) {

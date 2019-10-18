@@ -72,4 +72,14 @@
     return text;
 }
 
++(NSString *) extractTextMessage: (id<PThread>) thread {
+    NSArray *filteredTextMessages = [thread.allMessages filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(type == %d)",bMessageTypeText]];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"Date" ascending:NO];
+    filteredTextMessages = [filteredTextMessages sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+    if (filteredTextMessages.count > 0) {
+        return [(id<PMessage>)(filteredTextMessages.firstObject) text];
+    }
+    return @"";
+}
+
 @end

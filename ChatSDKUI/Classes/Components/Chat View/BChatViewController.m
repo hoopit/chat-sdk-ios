@@ -51,8 +51,7 @@
     if (BChatSDK.config.userChatInfoEnabled) {
         [self setSubtitle:[NSBundle t: bTapHereForContactInfo]];
     }
-    
-    if (_thread.type.intValue & bThreadFilterGroup) {
+    if (_thread.users.count > 2) {
 //        [self setSubtitle:_thread.memberListString];
     } else {
         // 1-to-1 Chat
@@ -87,7 +86,7 @@
     UINavigationController * nav = [BChatSDK.ui friendsNavigationControllerWithUsersToExclude:_thread.users.allObjects onComplete:^(NSArray * users, NSString * groupName){
         
         [BChatSDK.core addUsers:users toThread:_thread].thenOnMain(^id(id success){
-            [UIView alertWithTitle:[NSBundle t:bSuccess] withMessage:[NSBundle t:bAdded]];
+//            [UIView alertWithTitle:[NSBundle t:bSuccess] withMessage:[NSBundle t:bAdded]];
             // [self reloadData];
             return Nil;
         }, Nil);
@@ -105,7 +104,7 @@
     // Show the friends view controller
     UINavigationController * nav = [BChatSDK.ui friendsNavigationControllerWithUsersToExclude:_thread.users.allObjects onComplete:^(NSArray * users, NSString * groupName){
         [BChatSDK.core addUsers:users toThread:_thread].thenOnMain(^id(id success){
-           [UIView alertWithTitle:[NSBundle t:bSuccess] withMessage:[NSBundle t:bAdded]];
+//           [UIView alertWithTitle:[NSBundle t:bSuccess] withMessage:[NSBundle t:bAdded]];
             
          //   [self reloadData];
             return Nil;
@@ -203,7 +202,18 @@
 }
 
 -(void) updateTitle {
-    [self setTitle:_thread.displayName ? _thread.displayName : [NSBundle t: bDefaultThreadName]];
+//    [self setTitle:_thread.displayName ? _thread.displayName : [NSBundle t: bDefaultThreadName]];
+    if ([_thread.name length] == 0) {
+        
+        NSString *groupTitle = _thread.memberListString;
+        // In Group chat show your name also
+        if (_thread.users.count > 2) {
+            [groupTitle  stringByAppendingString:[NSString stringWithFormat:@", %@",BChatSDK.currentUser.name]];
+        }
+        [self setTitle: groupTitle];
+        return;
+    }
+    [self setTitle:_thread.name];
 }
 
 -(void) viewWillAppear:(BOOL)animated {

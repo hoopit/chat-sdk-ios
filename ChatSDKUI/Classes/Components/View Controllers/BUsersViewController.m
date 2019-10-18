@@ -46,7 +46,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.title = [NSBundle t:bDetails];
+    self.title = NSLocalizedString(@"members", nil);// [NSBundle t:bDetails];
     
 //    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:[NSBundle t:bBack]
 //                                                                             style:UIBarButtonItemStylePlain
@@ -176,7 +176,7 @@
     // Show the friends view controller
     UINavigationController * nav = [BChatSDK.ui friendsNavigationControllerWithUsersToExclude:_thread.users.allObjects onComplete:^(NSArray * users, NSString * groupName){
         [BChatSDK.core addUsers:users toThread:_thread].thenOnMain(^id(id success){
-            [UIView alertWithTitle:[NSBundle t:bSuccess] withMessage:[NSBundle t:bAdded]];
+//            [UIView alertWithTitle:[NSBundle t:bSuccess] withMessage:[NSBundle t:bAdded]];
             
             [self reloadData];
             return Nil;

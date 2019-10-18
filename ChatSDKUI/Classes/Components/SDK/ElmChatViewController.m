@@ -120,10 +120,6 @@
     
     [containerView addSubview:_titleLabel];
     _titleLabel.keepInsets.equal = 0;
-    _titleLabel.keepBottomInset.equal = 15;
-    
-    
-    
     
     _subtitleLabel = [[UILabel alloc] init];
     _subtitleLabel.textAlignment = NSTextAlignmentCenter;
@@ -141,6 +137,7 @@
 }
 
 -(void)hideRightBarButton {
+    _titleLabel.keepBottomInset.equal = 15;
     self.navigationItem.rightBarButtonItem = nil;
 }
 
@@ -233,6 +230,10 @@
 -(void) addMessage: (id<PMessage>) message {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.messageManager addMessage: message];
+
+        if (message.type.integerValue == bMessageTypeGroupNameUpdated) {
+            [self setTitle:message.thread.displayName];
+        }
 //        NSIndexPath * indexPath = [self.messageManager addMessage: message];
 //        NSIndexPath * indexPathOfPreviousMessage;
         
@@ -280,7 +281,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         id<PMessage> oldestMessage = self.messageManager.oldestMessage;
         NSMutableArray<NSIndexPath *> * indexPaths = [NSMutableArray arrayWithArray:[self.messageManager addMessages: messages]];
-
+         
 //        [self.tableView beginUpdates];
         NSLog(@"Reload %@", NSStringFromSelector(_cmd));
         [self.tableView reloadData];
@@ -809,6 +810,11 @@
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    id<PElmMessage> message = [self messageForIndexPath:indexPath];
+
+    if (message.type.integerValue == bMessageTypeUserAdded || message.type.integerValue == bMessageTypeUserLeft || message.type.integerValue == bMessageTypeGroupNameUpdated) {
+        return  NO;
+    }
     return YES;
 }
 
