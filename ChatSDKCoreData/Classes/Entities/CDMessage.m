@@ -125,7 +125,7 @@
         return NO;
     }
 
-    if ((self.thread.type.intValue & bThreadFilterPublic || self.thread.users.count > 2) && position & bMessagePosLast) {
+    if ((self.thread.type.intValue & bThreadFilterPublic || self.thread.users.count > 2) && position & bMessagePosFirst) {
         return YES;
     }
 
