@@ -520,8 +520,7 @@
         if (cell == NULL) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
         }
-        
-      
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.textLabel.textAlignment = NSTextAlignmentCenter;
         cell.textLabel.numberOfLines = 0;
         cell.textLabel.textColor = [BCoreUtilities colorWithHexString:BChatSDK.config.systemGeneratedMessagesColor];
@@ -565,7 +564,7 @@
     else {
         messageCell = [tableView_ dequeueReusableCellWithIdentifier:message.type.stringValue];
     }
-
+    messageCell.selectionStyle = UITableViewCellSelectionStyleNone;
     messageCell.navigationController = self.navigationController;
 
     // Add a gradient to the cells
@@ -810,12 +809,12 @@
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    id<PElmMessage> message = [self messageForIndexPath:indexPath];
-
-    if (message.type.integerValue == bMessageTypeUserAdded || message.type.integerValue == bMessageTypeUserLeft || message.type.integerValue == bMessageTypeGroupNameUpdated) {
-        return  NO;
-    }
-    return YES;
+//    id<PElmMessage> message = [self messageForIndexPath:indexPath];
+//
+//    if (message.type.integerValue == bMessageTypeUserAdded || message.type.integerValue == bMessageTypeUserLeft || message.type.integerValue == bMessageTypeGroupNameUpdated) {
+//        return  NO;
+//    }
+    return  NO;
 }
 
 // This only works for iOS8
