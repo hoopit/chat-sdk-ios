@@ -254,7 +254,9 @@
     NSMutableArray * userPromises = [NSMutableArray new];
     NSMutableArray * users = [NSMutableArray arrayWithArray:self.users.allObjects];
     for (id<PUser> user in users) {
-        if (!user.image && !user.isMe) {
+//        if (!user.image && !user.isMe) {
+
+        if (!user.isMe) {
             [userPromises addObject:user.updateAvatarFromURL];
         }
     }
@@ -302,7 +304,7 @@
         
         // When we get the user thumbnail image we make sure it is the size we want so resize it to be 100 x 100
         UIImage * image1 = [[UIImage imageWithData:((id<PUser>)users.firstObject).image] resizeImageToSize:CGSizeMake(100, 100)];
-        
+     
         // Then crop the image
         image1 = [image1 croppedImage:CGRectMake(25, 0, 49, 100)];
         
