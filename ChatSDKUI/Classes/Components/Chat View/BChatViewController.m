@@ -51,9 +51,12 @@
     if (BChatSDK.config.userChatInfoEnabled) {
         [self setSubtitle:[NSBundle t: bTapHereForContactInfo]];
     }
-    if (_thread.users.count > 2) {
+//    if (_thread.users.count > 2) {
+//    if (_thread.type.intValue & bThreadFilterGroup) {
 //        [self setSubtitle:_thread.memberListString];
-    } else {
+//    } else {
+    // Group types
+    if (_thread.type.intValue == bThreadType1to1) {
         // 1-to-1 Chat
         // hide right bar button item
         [self hideRightBarButton];
