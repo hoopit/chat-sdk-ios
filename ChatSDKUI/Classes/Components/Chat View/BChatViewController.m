@@ -304,7 +304,7 @@
 -(void) navigationBarTapped {
     _usersViewLoaded = YES;
     NSMutableArray * users = [NSMutableArray arrayWithArray: _thread.model.users.allObjects];
-    [users removeObject:BChatSDK.currentUser];
+//    [users removeObject:BChatSDK.currentUser];
     
     UINavigationController * nvc = [BChatSDK.ui usersViewNavigationControllerWithThread:_thread
                                                                      parentNavigationController:self.navigationController];

@@ -36,7 +36,7 @@
     if (self) {
         
         _users = [NSMutableArray arrayWithArray: thread.users.allObjects];
-        [_users removeObject:BChatSDK.currentUser];
+//        [_users removeObject:BChatSDK.currentUser];
         
         _thread = thread;
     }

@@ -37,10 +37,15 @@
     self.statusImageView.layer.cornerRadius = 6;
     [self setAvailabilityLabelText:@""];
     
-    [self.profileImageView sd_setImageWithURL:[NSURL URLWithString: user.imageURL]
-                             placeholderImage:user.defaultImage
-                                      options:SDWebImageCacheMemoryOnly & SDWebImageScaleDownLargeImages];
-    
+    NSString *displayImageUrlString  = user.imageURL;
+
+    if (user == BChatSDK.currentUser) {
+         displayImageUrlString  = BChatSDK.currentUser.imageURL;
+        [self.profileImageView setImage:[UIImage imageWithData:BChatSDK.currentUser.image]];
+    }
+    [self.profileImageView sd_setImageWithURL:[NSURL URLWithString: displayImageUrlString]
+                                  placeholderImage:user.defaultImage
+                                           options:SDWebImageCacheMemoryOnly & SDWebImageScaleDownLargeImages];
     self.title.text = user.name;
 //    self.subtitle.text = user.statusText;
 //
