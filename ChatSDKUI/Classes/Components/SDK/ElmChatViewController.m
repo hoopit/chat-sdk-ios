@@ -89,7 +89,6 @@
     for(NSArray * cell in BChatSDK.ui.messageCellTypes) {
         [self.tableView registerClass:cell.firstObject forCellReuseIdentifier:[cell.lastObject stringValue]];
     }
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"SimpleTableItem"];
 }
 
 // The naivgation bar has three functions
@@ -366,7 +365,7 @@
     [self updateInterfaceForReachabilityStateChange];
 
     [self setupKeyboardOverlay];
-
+ 
 }
 
 -(void) tableRefreshed {
@@ -513,11 +512,14 @@
         (!BChatSDK.audioMessage && message.type.integerValue == bMessageTypeAudio)) {
         // This is a standard text cell
         messageCell = [tableView_ dequeueReusableCellWithIdentifier:@"0"];
+        if (messageCell == nil) {
+            return [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"0"];
+        }
     }
     else if (message.type.integerValue == bMessageTypeUserAdded || message.type.integerValue == bMessageTypeUserLeft || message.type.integerValue == bMessageTypeGroupNameUpdated) {
         NSString *identifier = @"MessagesCell";
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-        if (cell == NULL) {
+        if (cell == nil) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
         }
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -563,6 +565,9 @@
     }
     else {
         messageCell = [tableView_ dequeueReusableCellWithIdentifier:message.type.stringValue];
+        if (messageCell == nil) {
+            messageCell = [[BMessageCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:message.type.stringValue];
+        }
     }
     messageCell.selectionStyle = UITableViewCellSelectionStyleNone;
     messageCell.navigationController = self.navigationController;
