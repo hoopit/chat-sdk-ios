@@ -84,8 +84,9 @@
         });
     }];
     
-    NSInteger badge = [[NSUserDefaults standardUserDefaults] integerForKey:bMessagesBadgeValueKey];
-    [self setPrivateThreadsBadge:badge];
+//    NSInteger badge = [[NSUserDefaults standardUserDefaults] integerForKey:bMessagesBadgeValueKey];
+    [self updateBadge];
+//    [self setPrivateThreadsBadge:badge];
     
 }
 
@@ -173,12 +174,15 @@
     int i = 0;
     NSArray * threads = [BChatSDK.core threadsWithType:type];
     for (id<PThread> thread in threads) {
-        for (id<PMessage> message in thread.allMessages) {
-            if (!message.isRead) {
-                i++;
-                break;
-            }
+        if (!thread.newestMessage.isRead  && thread.newestMessage.type.integerValue == bMessageTypeText) {
+            i++;
         }
+//        for (id<PMessage> message in thread.newestMessage) {
+//            if (!message.isRead && message.type.integerValue == bMessageTypeText) {
+//                i++;
+//                break;
+//            }
+//        }
     }
     return i;
 }

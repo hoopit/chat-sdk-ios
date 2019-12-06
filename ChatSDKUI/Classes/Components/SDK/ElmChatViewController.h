@@ -102,4 +102,5 @@
 -(void) addObservers;
 -(void) removeObservers;
 -(void)hideRightBarButton;
+-(void)pushThread;
 @end

@@ -221,6 +221,10 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+-(void)pushThread {
+    
+}
+
 -(void) setSubtitle: (NSString *) subtitle {
     _subtitleText = subtitle;
     _subtitleLabel.text = subtitle;
@@ -368,6 +372,7 @@
  
 }
 
+
 -(void) tableRefreshed {
     if ([delegate respondsToSelector:@selector(loadMoreMessages)]) {
         [delegate loadMoreMessages].thenOnMain(^id(id success) {
@@ -462,7 +467,9 @@
     [self removeObservers];
     
     [self.delegate markRead];
-    
+    [self pushThread];
+
+ //   CCThreadWrapper.thread(withModel: thread).push()
     _keyboardOverlay.alpha = 0;
     _keyboardOverlay.userInteractionEnabled = NO;
     

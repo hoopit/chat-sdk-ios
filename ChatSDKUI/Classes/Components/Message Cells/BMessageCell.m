@@ -69,9 +69,9 @@
         [self setReadStatus:bMessageReadStatusNone];
         [self.contentView addSubview:_readMessageImageView];
         
-        UITapGestureRecognizer * profileTouched = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showProfileView)];
-        _profilePicture.userInteractionEnabled = YES;
-        [_profilePicture addGestureRecognizer:profileTouched];
+//        UITapGestureRecognizer * profileTouched = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showProfileView)];
+//        _profilePicture.userInteractionEnabled = YES;
+//        [_profilePicture addGestureRecognizer:profileTouched];
         
         _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
 

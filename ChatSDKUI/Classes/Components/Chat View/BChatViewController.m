@@ -290,6 +290,7 @@
     else {
         [_thread markRead];
     }
+    [self pushThread];
 }
 
 //-(void) setThreadName {

@@ -123,7 +123,7 @@
     
     _tokenField.dataSource = self;
     _tokenField.placeholderText =[NSBundle t: NSLocalizedString(bEnterNamesHere, nil)]; // [NSBundle t:bEnterNamesHere];
-    _tokenField.toLabelText = [NSBundle t: NSLocalizedString(bTo, nil)];
+    _tokenField.toLabelText = NSLocalizedString(@"To", nil);
     _tokenField.userInteractionEnabled = YES;
     
     [_tokenField setColorScheme:[UIColor colorWithRed:61/255.0f green:149/255.0f blue:206/255.0f alpha:1.0f]];
