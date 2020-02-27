@@ -24,12 +24,14 @@
 
 @end
 
-@interface BFriendsListViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, VENTokenFieldDelegate, VENTokenFieldDataSource, UITextFieldDelegate, PFriendsListViewController> {
+@interface BFriendsListViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, VENTokenFieldDelegate, VENTokenFieldDataSource, UITextFieldDelegate, PFriendsListViewController, UISearchBarDelegate> {
     NSMutableArray * _contacts;
+    NSMutableArray * _searchedContacts;
     NSMutableArray * _selectedContacts;
     NSMutableArray * _contactsToExclude;
     
     NSString * _filterByName;
+    BOOL* _isSearching;
     BHook * _internetConnectionHook;
 }
 
@@ -39,12 +41,7 @@
 
 @property (nonatomic, readwrite) NSArray * (^overrideContacts)(void);
 
-@property (weak, nonatomic) IBOutlet VENTokenField * _tokenField;
 @property (strong, nonatomic) NSMutableArray * names;
-@property (weak, nonatomic) IBOutlet UIView * _tokenView;
-@property (weak, nonatomic) IBOutlet UITextField * groupNameTextField;
-@property (weak, nonatomic) IBOutlet UIView * groupNameView;
-
 @property (nonatomic, readwrite) int maximumSelectedUsers;
 
 -(instancetype) initWithUsersToExclude: (NSArray *) users onComplete: (void(^)(NSArray * users, NSString * name)) action;

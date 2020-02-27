@@ -26,10 +26,6 @@
 @synthesize tableView;
 @synthesize usersToInvite;
 @synthesize rightBarButtonActionTitle;
-@synthesize _tokenField;
-@synthesize _tokenView;
-@synthesize groupNameView;
-@synthesize groupNameTextField;
 @synthesize maximumSelectedUsers;
 
 // If we create it with a thread then we look at who is in the thread and make sure they don't come up on the lists
@@ -82,7 +78,7 @@
         {
             self.title =  NSLocalizedString(@"invite_others", nil);
         }
-        
+        _searchedContacts = [NSMutableArray new];
         _selectedContacts = [NSMutableArray new];
         _contacts = [NSMutableArray new];
         _contactsToExclude = [NSMutableArray new];
@@ -92,15 +88,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    groupNameTextField.placeholder = [NSBundle t:bGroupName];
-    groupNameTextField.delegate = self;
-    
-    if ([self isMovingFromParentViewController]){
-        
-    }
-    //  BOOL isPoped = [[NSUserDefaults standardUserDefaults]
-    //     boolForKey:@"isPoped"];
+    _isSearching = false;
+   
     if ([self isModal])
     {
         UIImage *image = [[UIImage imageNamed:@"cross"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
@@ -118,19 +107,6 @@
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
     self.names = [NSMutableArray array];
-    _tokenField.delegate = self;
-    //  _tokenField.inputTextFieldAccessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"search"]];
-    
-    _tokenField.dataSource = self;
-    _tokenField.placeholderText =[NSBundle t: NSLocalizedString(bEnterNamesHere, nil)]; // [NSBundle t:bEnterNamesHere];
-    _tokenField.toLabelText = NSLocalizedString(@"To", nil);
-    _tokenField.userInteractionEnabled = YES;
-    
-    [_tokenField setColorScheme:[UIColor colorWithRed:61/255.0f green:149/255.0f blue:206/255.0f alpha:1.0f]];
-    
-    _tokenView.layer.borderWidth = 0.5;
-    _tokenView.layer.borderColor = [UIColor colorWithRed:200/255.0 green:200/255.0 blue:200/255.0 alpha:1.0].CGColor;
-    
     //Add empty view
     EmptyChatView *emptyView = [[EmptyChatView alloc] initWithNibName:@"EmptyChatView" bundle:[NSBundle uiBundle]];
     [self.view insertSubview:emptyView.view atIndex:0];
@@ -145,9 +121,7 @@
     [self reloadData];
     
     [tableView registerNib:[UINib nibWithNibName:@"BUserCell" bundle:[NSBundle uiBundle]] forCellReuseIdentifier:bUserCellIdentifier];
-    
-    [self setGroupNameHidden:YES duration:0];
-}
+    }
 
 -(NSString *) getRightBarButtonActionTitle {
     if (self.rightBarButtonActionTitle) {
@@ -194,16 +168,6 @@
     NSString * newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
     self.navigationItem.rightBarButtonItem.enabled = newString.length;
     return YES;
-}
-
--(void) setGroupNameHidden: (BOOL) hidden duration: (float) duration {
-    [self.view keepAnimatedWithDuration: duration layout:^{
-        groupNameView.keepTopInset.equal = hidden ? -46 : 0;
-        groupNameView.alpha = hidden ? 0 : 1;
-    }];
-    if (!hidden) {
-        self.navigationItem.rightBarButtonItem.enabled = groupNameTextField.text.length;
-    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -253,7 +217,7 @@
         {
             [self.navigationController popViewControllerAnimated:true];
             if (self.usersToInvite != Nil) {
-                self.usersToInvite(_selectedContacts, groupNameTextField.text);
+                self.usersToInvite(_selectedContacts, @"");
             }
 //                        [self dismissViewControllerAnimated:YES completion:^{
 //                            if (self.usersToInvite != Nil) {
@@ -270,7 +234,7 @@
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-    [_tokenField resignFirstResponder];
+    [self.view endEditing:true];
 }
 
 
@@ -280,7 +244,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == bContactsSection) {
-        return _contacts.count;
+        return _isSearching ? _searchedContacts.count : _contacts.count;
     }
     return 0;
 }
@@ -302,7 +266,7 @@
     
     id<PUser> user;
     if (indexPath.section == bContactsSection) {
-        user = _contacts[indexPath.row];
+        user = _isSearching ? _searchedContacts[indexPath.row] : _contacts[indexPath.row];
     }
     if ([_selectedContacts containsObject:user] || [_contactsToExclude containsObject:user]){
         [cell setSelectedImage];
@@ -321,12 +285,8 @@
 
 - (void)tableView:(UITableView *)tableView_ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     id<PUser> user;
-//    if ([_contactsToExclude containsObject:user]){
-//        return;
-//    }
-    
     if (indexPath.section == bContactsSection) {
-        user = _contacts[indexPath.row];
+        user = _isSearching ? _searchedContacts[indexPath.row] : _contacts[indexPath.row];
     }
     
     BOOL value = [[user.meta metaValueForKey:@"can_message"] boolValue];
@@ -340,12 +300,7 @@
     self.navigationItem.rightBarButtonItem.enabled = _selectedContacts.count;
     [tableView_ deselectRowAtIndexPath:indexPath animated:YES];
     [tableView_ reloadData];
-    
-    //    [UIView animateWithDuration:0.2 animations:^{
-    //        _tokenView.keepHeight.equal = _tokenField.bounds.size.height;
-    //    }];
-    
-   // [self reloadData];
+  
 }
 
 -(void) showAlertMessage {
@@ -366,48 +321,6 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-#pragma mark - VENTokenFieldDelegate
-
-- (void)tokenField:(VENTokenField *)tokenField didChangeText:(NSString *)text {
-    if (text.length) {
-        
-        [UIView animateWithDuration:0.2 animations:^{
-            _tokenView.keepHeight.equal = _tokenField.bounds.size.height;
-        }];
-        
-    }
-    _filterByName = text;
-    [self reloadData];
-}
-
-// This is when we press enter in the text field
-- (void)tokenField:(VENTokenField *)tokenField didEnterText:(NSString *)text {
-    
-   // [_tokenField reloadData];
-    [self reloadData];
-    
-    [_tokenField resignFirstResponder];
-}
-
-// This is when we delete a token
-- (void)tokenField:(VENTokenField *)tokenField didDeleteTokenAtIndex:(NSUInteger)index {
-    
-    [self deselectUserWithName:[self.names objectAtIndex:index]];
-    
-    [UIView animateWithDuration:0.2 animations:^{
-        _tokenView.keepHeight.equal = _tokenField.bounds.size.height;
-    }];
-}
-
-#pragma mark - VENTokenFieldDataSource
-
-- (NSString *)tokenField:(VENTokenField *)tokenField titleForTokenAtIndex:(NSUInteger)index {
-    return self.names[index];
-}
-
-- (NSUInteger)numberOfTokensInTokenField:(VENTokenField *)tokenField {
-    return self.names.count;
-}
 
 - (void) selectUser: (id<PUser>) user {
     // for 1-1 chat
@@ -423,12 +336,6 @@
     //   [self.names addObject:user.name];
     
     _filterByName = Nil;
-   // [_tokenField reloadData];
-    
-    //        [self setGroupNameHidden:_selectedContacts.count < 2 || _contactsToExclude.count > 0 duration:0.4];
-    
-  //  [self reloadData];
-    //   }
     
 }
 
@@ -444,10 +351,6 @@
     }
     
     [self.names removeObject:name];
-    [_tokenField reloadData];
-    
-    [self setGroupNameHidden:_selectedContacts.count + _contactsToExclude.count < 2 duration:0.4];
-    
     [self reloadData];
 }
 
@@ -459,16 +362,15 @@
 }
 
 -(void) reloadData {
-    
     // Load contacts
-    [_contacts removeAllObjects];
-    
-    if(_overrideContacts == Nil) {
-        [_contacts addObjectsFromArray:[BChatSDK.contact contactsWithType:bUserConnectionTypeContact]];
-    }
-    else {
-        [_contacts addObjectsFromArray: self.overrideContacts()];
-    }
+//    [_contacts removeAllObjects];
+    _contacts = [BChatSDK.contact contactsWithType:bUserConnectionTypeContact];
+//    if(_overrideContacts == Nil) {
+//        [_contacts addObjectsFromArray:[BChatSDK.contact contactsWithType:bUserConnectionTypeContact]];
+//    }
+//    else {
+//        [_contacts addObjectsFromArray: self.overrideContacts()];
+//    }
     
     //  [_contacts removeObjectsInArray:_selectedContacts];
     
@@ -476,24 +378,34 @@
 //    [_contacts removeObjectsInArray:_contactsToExclude];
 //    [_contacts sortOnlineThenAlphabetical];
     [_contacts sortAlphabetical];
+    [self setSerachViewData];
 
-    if (_filterByName && _filterByName.length) {
-        NSPredicate * predicate = [NSPredicate predicateWithFormat:@"name contains[c] %@", _filterByName];
-        [_contacts filterUsingPredicate:predicate];
+    [self updateRightBarButtonActionTitle];
+    self.navigationItem.rightBarButtonItem.enabled = _selectedContacts.count;
+}
+
+-(void)setSerachViewData {
+    NSMutableArray* currentArray = [NSMutableArray new];
+    if (_isSearching == true) {
+        [_searchedContacts removeAllObjects];
+        [_searchedContacts addObjectsFromArray:_contacts];
+        [currentArray addObjectsFromArray:_searchedContacts];
+        if (_filterByName && _filterByName.length) {
+            NSPredicate * predicate = [NSPredicate predicateWithFormat:@"name contains[c] %@", _filterByName];
+            [_searchedContacts filterUsingPredicate:predicate];
+        }
+    } else {
+        [currentArray addObjectsFromArray:_contacts];
     }
-    
     //Show empty View
-    if ([_contacts count] > 0) {
+    if ([currentArray count] > 0) {
         [self showEmptyView:false];
     }
     else {
         [self showEmptyView:true];
     }
     [tableView reloadData];
-    [self updateRightBarButtonActionTitle];
-    self.navigationItem.rightBarButtonItem.enabled = _selectedContacts.count;
 }
-
 
 -(void) setUsersToExclude: (NSArray *) users {
     [_contactsToExclude removeAllObjects];
@@ -553,7 +465,17 @@
     self.navigationItem.rightBarButtonItem.enabled = connected;
 }
 
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    _filterByName = searchText;
+    [self setSerachViewData];
+}
 
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    _isSearching = true;
+}
 
+- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
+    _isSearching = false;
+}
 @end
 

@@ -66,7 +66,7 @@
         [self.contentView addSubview:_nameLabel];
 
         _readMessageImageView = [[UIImageView alloc] initWithFrame:CGRectMake(bTimeLabelPadding, 0, 0, 0)];
-        [self setReadStatus:bMessageReadStatusNone];
+//        [self setReadStatus:bMessageReadStatusNone];
         [self.contentView addSubview:_readMessageImageView];
         
 //        UITapGestureRecognizer * profileTouched = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showProfileView)];

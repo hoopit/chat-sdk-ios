@@ -49,7 +49,7 @@
     tableView = [[UITableView alloc] init];
     tableView.delegate = self;
     tableView.dataSource = self;
-    
+    tableView.tableFooterView = [UIView new];
     EmptyChatView *emptyView = [[EmptyChatView alloc] initWithNibName:@"EmptyChatView" bundle:[NSBundle uiBundle]];
     [self.view addSubview:emptyView.view];
     emptyView.view.keepInsets.equal = 0;
@@ -197,8 +197,7 @@
         cell.dateLabel.text = @"";
     }
     
-    
-    if (thread.unreadMessageCount) {
+    if (thread.newestMessage.isRead) { //(thread.unreadMessageCount == 0) {
         if(BChatSDK.config.threadTimeFont) {
             cell.dateLabel.font = BChatSDK.config.threadTimeFont;
         }

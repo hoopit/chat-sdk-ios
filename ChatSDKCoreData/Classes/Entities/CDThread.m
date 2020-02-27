@@ -181,10 +181,11 @@
     
     for(id<PMessage> message in self.messages) {
         if (!message.isRead && !message.senderIsMe) {
-        
+//            [message setRead:[NSNumber numberWithInt:bMessageReadStatusRead]];
 //            [message setRead: [NSNumber numberWithInt:bMessageReadStatusRead]];
             [message setReadStatus:bMessageReadStatusRead forUserID:BChatSDK.currentUserID];
-            
+//            [message setReadStatus:bMessageReadStatusDelivered forUserID:BChatSDK.currentUserID];
+
             // TODO: Should we have this here? Maybe this gets called too soon
             // but it's a good backup in case the app closes before we save
             [message setDelivered: @YES];

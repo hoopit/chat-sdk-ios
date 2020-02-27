@@ -174,9 +174,14 @@
     int i = 0;
     NSArray * threads = [BChatSDK.core threadsWithType:type];
     for (id<PThread> thread in threads) {
-        if (!thread.newestMessage.isRead  && thread.newestMessage.type.integerValue == bMessageTypeText) {
+        if (!thread.newestMessage.isRead) {
             i++;
-        }
+        } // commented code - Kiran
+//        if (!thread.newestMessage.isRead  && thread.newestMessage.type.integerValue == bMessageTypeText) {
+//            i++;
+//        }
+        
+        
 //        for (id<PMessage> message in thread.newestMessage) {
 //            if (!message.isRead && message.type.integerValue == bMessageTypeText) {
 //                i++;
