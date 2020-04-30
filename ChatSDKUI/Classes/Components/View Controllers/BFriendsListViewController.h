@@ -31,11 +31,11 @@
     NSMutableArray * _contactsToExclude;
     
     NSString * _filterByName;
-    BOOL* _isSearching;
     BHook * _internetConnectionHook;
 }
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (nonatomic) BOOL isSearching;
 @property (nonatomic, readwrite, copy) void (^usersToInvite)(NSArray * users, NSString * groupName);
 @property (nonatomic, readwrite) NSString * rightBarButtonActionTitle;
 

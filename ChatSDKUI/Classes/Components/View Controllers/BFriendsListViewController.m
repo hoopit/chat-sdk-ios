@@ -27,7 +27,7 @@
 @synthesize usersToInvite;
 @synthesize rightBarButtonActionTitle;
 @synthesize maximumSelectedUsers;
-
+@synthesize isSearching;
 // If we create it with a thread then we look at who is in the thread and make sure they don't come up on the lists
 // If we are creating a new thread then we don't mind
 
@@ -88,7 +88,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    _isSearching = false;
+    isSearching = false;
    
     if ([self isModal])
     {
@@ -244,7 +244,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == bContactsSection) {
-        return _isSearching ? _searchedContacts.count : _contacts.count;
+        return isSearching ? _searchedContacts.count : _contacts.count;
     }
     return 0;
 }
@@ -266,7 +266,11 @@
     
     id<PUser> user;
     if (indexPath.section == bContactsSection) {
-        user = _isSearching ? _searchedContacts[indexPath.row] : _contacts[indexPath.row];
+        if (isSearching == true) {
+            user =  _searchedContacts[indexPath.row];
+        } else {
+            user = _contacts[indexPath.row];
+        }
     }
     if ([_selectedContacts containsObject:user] || [_contactsToExclude containsObject:user]){
         [cell setSelectedImage];
@@ -286,7 +290,7 @@
 - (void)tableView:(UITableView *)tableView_ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     id<PUser> user;
     if (indexPath.section == bContactsSection) {
-        user = _isSearching ? _searchedContacts[indexPath.row] : _contacts[indexPath.row];
+        user = isSearching ? _searchedContacts[indexPath.row] : _contacts[indexPath.row];
     }
     
     BOOL value = [[user.meta metaValueForKey:@"can_message"] boolValue];
@@ -386,8 +390,9 @@
 
 -(void)setSerachViewData {
     NSMutableArray* currentArray = [NSMutableArray new];
-    if (_isSearching == true) {
-        [_searchedContacts removeAllObjects];
+    [_searchedContacts removeAllObjects];
+
+    if (isSearching == true) {
         [_searchedContacts addObjectsFromArray:_contacts];
         [currentArray addObjectsFromArray:_searchedContacts];
         if (_filterByName && _filterByName.length) {
@@ -466,16 +471,21 @@
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    if (searchText.length == 0) {
+        isSearching = false;
+    } else {
+        isSearching = true;
+    }
     _filterByName = searchText;
     [self setSerachViewData];
 }
 
-- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
-    _isSearching = true;
-}
-
-- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
-    _isSearching = false;
-}
+//- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+//    isSearching = true;
+//}
+//
+//- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
+//    isSearching = false;
+//}
 @end
 
