@@ -177,6 +177,10 @@
 
 -(void) markRead {
     
+    if !BChatSDK.currentUserID {
+        return
+    }
+    
     BOOL didMarkRead = NO;
     
     for(id<PMessage> message in self.messages) {
