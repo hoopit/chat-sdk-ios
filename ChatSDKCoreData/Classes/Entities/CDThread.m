@@ -183,7 +183,7 @@
         if (!message.isRead && !message.senderIsMe) {
 //            [message setRead:[NSNumber numberWithInt:bMessageReadStatusRead]];
 //            [message setRead: [NSNumber numberWithInt:bMessageReadStatusRead]];
-            if BChatSDK.currentUserID != nil {
+            if (BChatSDK.currentUserID != nil) {
                 [message setReadStatus:bMessageReadStatusRead forUserID:BChatSDK.currentUserID];
             }
 //            [message setReadStatus:bMessageReadStatusDelivered forUserID:BChatSDK.currentUserID];
