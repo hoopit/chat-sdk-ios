@@ -185,6 +185,8 @@
 //            [message setRead: [NSNumber numberWithInt:bMessageReadStatusRead]];
             if (BChatSDK.currentUserID != nil) {
                 [message setReadStatus:bMessageReadStatusRead forUserID:BChatSDK.currentUserID];
+            } else {
+                [message setRead:@(bMessageReadStatusRead)];
             }
 //            [message setReadStatus:bMessageReadStatusDelivered forUserID:BChatSDK.currentUserID];
 
